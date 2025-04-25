@@ -1,13 +1,13 @@
 name: Angular x InvisiRisk
- 
+
 on:
   workflow_dispatch:
- 
+
 permissions:
   checks: write
   contents: write
   packages: read
- 
+
 jobs:
   python-application-build:
     runs-on: ubuntu-latest
@@ -18,21 +18,30 @@ jobs:
         with:
           api_url: "https://app.invisirisk.com"
           app_token: ${{ secrets.IR_API_KEY }}
-      - uses: actions/checkout@v4
- 
-      - name: Use npm
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-         node-version: '18'
- 
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
- 
-      #- name: 😈 Execute malicious script
-        #run: bash run_malicious_scripts.sh
+          node-version: '20.11.1'
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies using Yarn
+        run: yarn install
+
+      # Optional: You can still include this only if really needed
+      # - name: Install dependencies using NPM (not recommended)
+      #   run: npm install --legacy-peer-deps
+
+      # - name: 😈 Execute malicious script
+      #   run: bash run_malicious_scripts.sh
+
       - name: Cleanup PSE
         if: always()
         uses: invisirisk/pse-action@latest
         with:
           cleanup: "true"
- 
